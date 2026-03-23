@@ -1,6 +1,11 @@
 const TelegramBot = require("node-telegram-bot-api");
+const http = require("http");
 const TOKEN = "8603160426:AAGK2QbYXxQPnzDOEAhQ0PyB60MauoQ6RuU";
-const bot = new TelegramBot(TOKEN, {polling: true});
+const URL = "https://karobot-production.up.railway.app";
+const PORT = process.env.PORT || 3000;
+
+const bot = new TelegramBot(TOKEN);
+bot.setWebHook(URL + "/bot" + TOKEN);
 
 const PROJECTS = {
   shasti: {label: "Shasti", password: "shasti123"},
@@ -84,4 +89,24 @@ bot.on("message", function(msg) {
   }
 });
 
-console.log("Bot running...");
+var server = http.createServer(function(req, res) {
+  if (req.method === "POST" && req.url === "/bot" + TOKEN) {
+    var body = "";
+    req.on("data", function(chunk) { body += chunk; });
+    req.on("end", function() {
+      try {
+        var update = JSON.parse(body);
+        bot.processUpdate(update);
+      } catch(e) {}
+      res.writeHead(200);
+      res.end("OK");
+    });
+  } else {
+    res.writeHead(200);
+    res.end("Karo Bot Running");
+  }
+});
+
+server.listen(PORT, function() {
+  console.log("Bot running on port " + PORT);
+});
