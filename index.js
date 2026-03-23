@@ -2,7 +2,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const http = require("http");
 const TOKEN = "8603160426:AAGK2QbYXxQPnzDOEAhQ0PyB60MauoQ6RuU";
 const URL = "https://karobot-production.up.railway.app";
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 const bot = new TelegramBot(TOKEN);
 bot.setWebHook(URL + "/bot" + TOKEN);
